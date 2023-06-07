@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.MemberMapper">
+
+    <select id="getMembers" resultType="com.example.demo.entity.Member">
+        SELECT
+            m.email
+            , m.password
+            , m.name
+            , m.from_social as fromSocial
+        FROM
+            `member` AS m
+    </select>
+
+    <select id="getMemberByEmail" resultType="com.example.demo.dto.MemberDTO">
+        SELECT
+            m.email
+            , m.password
+            , m.name
+            , m.from_social as fromSocial
+        FROM
+            `member` AS m
+        WHERE
+            email = #{email};
+    </select>
+
+    <insert id="insertMember">
+        INSERT INTO `member` (email, password, name, from_social)
+        VALUES (#{member.email}, #{member.password}, #{member.name}, #{member.fromSocial});
+    </insert>
+
+    <insert id="insertMemberRole">
+        INSERT INTO `member_role` (member_email, role_set)
+        VALUES (#{email}, #{role});
+    </insert>
+
+    <select id="findByEmail" resultType="com.example.demo.dto.MemberRoleDTO">
+        SELECT
+            m.email
+            , m.password
+            , m.name
+            , m.from_social as fromSocial
+            , `member_role`.role_set as roleSet
+        FROM
+            `member` as m
+            JOIN `member_role`
+            ON m.email = `member_role`.member_email
+        WHERE
+            m.email = #{email}
+        AND
+            m.from_social = #{social}
+    </select>
+
+</mapper>
